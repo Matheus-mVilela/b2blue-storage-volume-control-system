@@ -16,7 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from app.views import RecyclingStorageView, StorageCleanupOrderView 
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('storages/', RecyclingStorageView.as_view(), name='storages'),
+    path(
+        'cleanup-orders/',
+        StorageCleanupOrderView.as_view(),
+        name='cleanup_orders'
+    ),
+    path(
+        'cleanup-orders/<int:pk>/',
+        StorageCleanupOrderView.as_view(),
+        name='update_cleanup_orders'
+    ),
 ]

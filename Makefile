@@ -2,11 +2,11 @@ build:
 	@[ -f .env ] || cp template.env .env
 	@docker-compose build
 
-format: ## Style code
+format: up ## Style code
 	@docker-compose exec backend /bin/bash -c 'isort . && black -l 79 . && flake8 .'
 
 test: up ## Run tests
-	@docker-compose exec backend /bin/bash -c './backend/manage.py test'
+	@docker-compose exec backend /bin/bash -c './backend/manage.py test app'
 
 restart: ## Restart the container
 	@docker-compose restart backend
