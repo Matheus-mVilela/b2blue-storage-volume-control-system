@@ -1,12 +1,12 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 from app.models import RecyclingStorage, StorageCleanupOrder
 from app.serializers import (
     RecyclingStorageSerializer,
-    StorageCleanupOrderSerializer,
     StorageCleanupOrderApprovedSerializer,
+    StorageCleanupOrderSerializer,
 )
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 
 class RecyclingStorageView(APIView):
@@ -26,7 +26,8 @@ class RecyclingStorageView(APIView):
 class StorageCleanupOrderView(APIView):
     def get(self, request):
         cleanup_orders = StorageCleanupOrder.objects.filter(
-            closed_at=None).all()
+            closed_at=None
+        ).all()
         serializer = StorageCleanupOrderSerializer(cleanup_orders, many=True)
         return Response(serializer.data)
 

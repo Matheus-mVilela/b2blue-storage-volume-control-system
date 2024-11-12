@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
 from random import randint
 
-from rest_framework.test import APITestCase
-from rest_framework import status
 from app.models import RecyclingStorage, StorageCleanupOrder
+from rest_framework import status
+from rest_framework.test import APITestCase
 
 
 class RecyclingStorageViewTest(APITestCase):
@@ -26,7 +26,7 @@ class RecyclingStorageViewTest(APITestCase):
                 'id': recycling_storage.id,
                 'name': recycling_storage.name,
                 'description': recycling_storage.description,
-                'capacity': recycling_storage.capacity
+                'capacity': recycling_storage.capacity,
             }
         ]
         self.assertEqual(expected_response, response.json())
@@ -48,11 +48,11 @@ class StorageCleanupOrderViewTest(APITestCase):
         self.now = datetime.now(timezone.utc)
         self.recycling_storage = RecyclingStorage.objects.create(
             name='Storage 1'
-            )
+        )
         self.cleanup_order_data = {
             'description': 'Cleanup order 1',
             'current_capacity': 100,
-            'recycling_storage': self.recycling_storage
+            'recycling_storage': self.recycling_storage,
         }
         self.url = 'http://0.0.0.0:8000/cleanup-orders/'
 
@@ -66,9 +66,9 @@ class StorageCleanupOrderViewTest(APITestCase):
         expected_response = [
             {
                 'id': cleanup_order.id,
-                'description': cleanup_order.description, 
-                'current_capacity': cleanup_order.current_capacity, 
-                'approved_at': cleanup_order.approved_at, 
+                'description': cleanup_order.description,
+                'current_capacity': cleanup_order.current_capacity,
+                'approved_at': cleanup_order.approved_at,
                 'recycling_storage_name': self.recycling_storage.name,
             }
         ]

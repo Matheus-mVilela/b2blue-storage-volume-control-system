@@ -36,8 +36,9 @@ class StorageCleanupOrder(BaseModel):
     closed_at = models.DateTimeField(null=True)
 
     recycling_storage = models.ForeignKey(
-        RecyclingStorage, on_delete=models.CASCADE,
-        related_name='cleanup_orders'
+        RecyclingStorage,
+        on_delete=models.CASCADE,
+        related_name='cleanup_orders',
     )
 
     def close(self):

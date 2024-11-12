@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from app.models import RecyclingStorage, StorageCleanupOrder
+from rest_framework import serializers
 
 
 class RecyclingStorageSerializer(serializers.ModelSerializer):
@@ -23,8 +23,8 @@ class StorageCleanupOrderSerializer(serializers.ModelSerializer):
             'description',
             'current_capacity',
             'approved_at',
-            'recycling_storage_name'
-            ]
+            'recycling_storage_name',
+        ]
 
     def get_recycling_storage_name(self, obj):
         return obj.recycling_storage.name if obj.recycling_storage else None

@@ -14,10 +14,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from app.views import RecyclingStorageView, StorageCleanupOrderView
 from django.contrib import admin
 from django.urls import path
-from app.views import RecyclingStorageView, StorageCleanupOrderView 
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,11 +24,11 @@ urlpatterns = [
     path(
         'cleanup-orders/',
         StorageCleanupOrderView.as_view(),
-        name='cleanup_orders'
+        name='cleanup_orders',
     ),
     path(
         'cleanup-orders/<int:pk>/',
         StorageCleanupOrderView.as_view(),
-        name='update_cleanup_orders'
+        name='update_cleanup_orders',
     ),
 ]

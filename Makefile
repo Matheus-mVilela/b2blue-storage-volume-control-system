@@ -3,7 +3,7 @@ build:
 	@docker-compose build
 
 format: up ## Style code
-	@docker-compose exec backend /bin/bash -c 'isort . && black -l 79 . && flake8 .'
+	@docker-compose exec backend /bin/bash -c 'isort . && blue . && flake8 .'
 
 test: up ## Run tests
 	@docker-compose exec backend /bin/bash -c './backend/manage.py test app'
