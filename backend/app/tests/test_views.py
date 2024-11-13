@@ -1,9 +1,14 @@
 from datetime import datetime, timezone
 from random import randint
 
-from app.models import RecyclingStorage, StorageCleanupOrder
 from rest_framework import status
 from rest_framework.test import APITestCase
+
+from app.models import (
+    RecyclingStorage,
+    RecyclingStorageHistory,
+    StorageCleanupOrder,
+)
 from storage_volume_control import settings
 
 
@@ -15,24 +20,31 @@ class RecyclingStorageViewTest(APITestCase):
         }
         self.url = f'{settings.API_BASE_URL}/storages/'
 
-    def test_get_recycling_storages(self):
-        recycling_storage = RecyclingStorage.objects.create(
+        self.recycling_storage = RecyclingStorage.objects.create(
             **self.storage_data
         )
+        self.storage_history = RecyclingStorageHistory.objects.create(
+            recycling_storage=self.recycling_storage,
+            capacity=self.recycling_storage.capacity,
+        )
+
+    def test_get_recycling_storages(self):
         response = self.client.get(self.url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json()), 1)
         expected_response = [
             {
-                'id': recycling_storage.id,
-                'name': recycling_storage.name,
-                'description': recycling_storage.description,
-                'capacity': recycling_storage.capacity,
+                'id': self.recycling_storage.id,
+                'name': self.recycling_storage.name,
+                'description': self.recycling_storage.description,
+                'capacity': self.recycling_storage.capacity,
             }
         ]
         self.assertEqual(expected_response, response.json())
 
     def test_post_recycling_storage(self):
+        RecyclingStorage.objects.all().delete()
+        self.assertEqual(RecyclingStorage.objects.count(), 0)
         response = self.client.post(self.url, self.storage_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(RecyclingStorage.objects.count(), 1)
@@ -42,6 +54,40 @@ class RecyclingStorageViewTest(APITestCase):
         invalid_data = {}
         response = self.client.post(self.url, invalid_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_patch_storage(self):
+        new_data = {'capacity': 80}
+        url = f'{self.url}{self.recycling_storage.pk}/'
+        response = self.client.patch(url, new_data, format='json')
+        self.recycling_storage.refresh_from_db()
+        history_entry = RecyclingStorageHistory.objects.filter(
+            recycling_storage=self.recycling_storage
+        ).last()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.recycling_storage.capacity, 80)
+        self.assertIsNotNone(history_entry)
+        self.assertEqual(history_entry.capacity, 80)
+
+    def test_patch_storage_not_found(self):
+        url = f'{self.url}{randint(10000, 1000000)}/'
+        new_data = {'capacity': 100}
+        response = self.client.patch(url, new_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data, {'error': 'Storage not found'})
+
+    def test_patch_storage_invalid_data(self):
+        url = f'{self.url}{self.recycling_storage.pk}/'
+        invalid_data = {'capacity': -50}
+        response = self.client.patch(url, invalid_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('capacity', response.data)
+
+    def test_patch_storage_capacity_greater_than_100(self):
+        url = f'{self.url}{self.recycling_storage.pk}/'
+        invalid_data = {'capacity': 150}
+        response = self.client.patch(url, invalid_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('capacity', response.data)
 
 
 class StorageCleanupOrderViewTest(APITestCase):
