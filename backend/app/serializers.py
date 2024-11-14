@@ -42,6 +42,7 @@ class RecyclingStorageSerializer(serializers.ModelSerializer):
 
 class StorageCleanupOrderSerializer(serializers.ModelSerializer):
     recycling_storage_name = serializers.SerializerMethodField()
+    storage_id = serializers.SerializerMethodField()
 
     class Meta:
         model = StorageCleanupOrder
@@ -50,11 +51,15 @@ class StorageCleanupOrderSerializer(serializers.ModelSerializer):
             'description',
             'current_capacity',
             'approved_at',
+            'storage_id',
             'recycling_storage_name',
         ]
 
     def get_recycling_storage_name(self, obj):
         return obj.recycling_storage.name if obj.recycling_storage else None
+
+    def get_storage_id(self, obj):
+        return obj.recycling_storage.id if obj.recycling_storage else None
 
 
 class StorageCleanupOrderApprovedSerializer(serializers.ModelSerializer):

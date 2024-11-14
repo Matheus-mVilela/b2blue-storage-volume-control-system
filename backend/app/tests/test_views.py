@@ -89,6 +89,12 @@ class RecyclingStorageViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('capacity', response.data)
 
+    def test_delete_storage(self):
+        url = f'{self.url}{self.recycling_storage.pk}/'
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(RecyclingStorage.objects.count(), 0)
+
 
 class StorageCleanupOrderViewTest(APITestCase):
     def setUp(self):
@@ -117,6 +123,7 @@ class StorageCleanupOrderViewTest(APITestCase):
                 'current_capacity': cleanup_order.current_capacity,
                 'approved_at': cleanup_order.approved_at,
                 'recycling_storage_name': self.recycling_storage.name,
+                'storage_id': self.recycling_storage.id,
             }
         ]
         self.assertEqual(expected_response, response.json())

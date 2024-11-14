@@ -1,16 +1,17 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import './App.css'
-import Storages from './components/Storages'
+import Dashboard from './components/Dashboard'
+import { CssBaseline } from '@mui/material'
 
 
-const queryClient = new QueryClient()
+export const queryClient = new QueryClient()
 
 
 function App() {
-  
   return (
     <QueryClientProvider client={queryClient}>
-      <Storages/>
+      <CssBaseline/>
+      <Dashboard/>
     </QueryClientProvider>
   )
 }
