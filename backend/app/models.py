@@ -29,6 +29,15 @@ class RecyclingStorage(BaseModel):
         return self
 
 
+class RecyclingStorageHistory(BaseModel):
+    recycling_storage = models.ForeignKey(
+        RecyclingStorage,
+        on_delete=models.CASCADE,
+        related_name='history',
+    )
+    capacity = models.FloatField(default=0.0)
+
+
 class StorageCleanupOrder(BaseModel):
     description = models.TextField(max_length=300, null=True)
     current_capacity = models.FloatField()

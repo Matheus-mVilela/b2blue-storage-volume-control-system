@@ -1,12 +1,13 @@
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from app.models import RecyclingStorage, StorageCleanupOrder
 from app.serializers import (
     RecyclingStorageSerializer,
     StorageCleanupOrderApprovedSerializer,
     StorageCleanupOrderSerializer,
 )
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 
 class RecyclingStorageView(APIView):
@@ -21,6 +22,25 @@ class RecyclingStorageView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, pk, format=None):
+        try:
+            storage = RecyclingStorage.objects.get(pk=pk)
+        except RecyclingStorage.DoesNotExist:
+            return Response(
+                {'error': 'Storage not found'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        serializer = RecyclingStorageSerializer(
+            storage, data=request.data, partial=True
+        )
+        if not serializer.is_valid():
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer.save()
+        return Response(serializer.data)
 
 
 class StorageCleanupOrderView(APIView):

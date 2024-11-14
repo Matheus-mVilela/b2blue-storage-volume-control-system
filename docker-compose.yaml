@@ -5,9 +5,19 @@ services:
     image: backend
     container_name: backend
     ports:
-      - "${BACKEND_PORT:-8000:8000}"
+      - "${BACKEND_PORT:-8000}:8000"
     volumes:
-      - .:/app
+      - ./backend:/app
+    tty: true
+    networks:
+      - main_network
+
+  frontend:
+    build: ./frontend
+    image: frontend
+    container_name: frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
     tty: true
     networks:
       - main_network

@@ -1,5 +1,10 @@
-from app.models import RecyclingStorage, StorageCleanupOrder
 from rest_framework import serializers
+
+from app.models import (
+    RecyclingStorage,
+    RecyclingStorageHistory,
+    StorageCleanupOrder,
+)
 
 
 class RecyclingStorageSerializer(serializers.ModelSerializer):
@@ -9,8 +14,30 @@ class RecyclingStorageSerializer(serializers.ModelSerializer):
 
     def save(self, *argrs, **kwargs):
         recycling_storage = super().save(*argrs, **kwargs)
-        recycling_storage.create_cleanup_order()
+
+        order_pending = StorageCleanupOrder.objects.filter(
+            recycling_storage=recycling_storage,
+            approved_at__isnull=True,
+        ).exists()
+
+        if not order_pending:
+            recycling_storage.create_cleanup_order()
+
+        RecyclingStorageHistory.objects.create(
+            recycling_storage=recycling_storage,
+            capacity=recycling_storage.capacity,
+        )
         return recycling_storage
+
+    def validate_capacity(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                'Capacity must be greater than 0'
+            )
+
+        if value > 100:
+            raise serializers.ValidationError('Capacity must be less than 100')
+        return value
 
 
 class StorageCleanupOrderSerializer(serializers.ModelSerializer):
@@ -34,3 +61,8 @@ class StorageCleanupOrderApprovedSerializer(serializers.ModelSerializer):
     class Meta:
         model = StorageCleanupOrder
         fields = ['approved_at']
+
+    def save(self, *argrs, **kwargs):
+        order = super().save(*argrs, **kwargs)
+        order.close()
+        return order
