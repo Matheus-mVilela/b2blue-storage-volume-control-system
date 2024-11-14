@@ -4,6 +4,7 @@ from random import randint
 from app.models import RecyclingStorage, StorageCleanupOrder
 from rest_framework import status
 from rest_framework.test import APITestCase
+from storage_volume_control import settings
 
 
 class RecyclingStorageViewTest(APITestCase):
@@ -12,7 +13,7 @@ class RecyclingStorageViewTest(APITestCase):
             'name': 'Storage 1',
             'description': 'Fake Descriptions',
         }
-        self.url = 'http://0.0.0.0:8000/storages/'
+        self.url = f'{settings.API_BASE_URL}/storages/'
 
     def test_get_recycling_storages(self):
         recycling_storage = RecyclingStorage.objects.create(
@@ -54,7 +55,7 @@ class StorageCleanupOrderViewTest(APITestCase):
             'current_capacity': 100,
             'recycling_storage': self.recycling_storage,
         }
-        self.url = 'http://0.0.0.0:8000/cleanup-orders/'
+        self.url = f'{settings.API_BASE_URL}/cleanup-orders/'
 
     def test_get_storage_cleanup_orders(self):
         cleanup_order = StorageCleanupOrder.objects.create(
