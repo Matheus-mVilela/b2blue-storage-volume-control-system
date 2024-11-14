@@ -1,46 +1,14 @@
 version: "3"
 services:
-  rabbitmq:
-    image: rabbitmq:3
-    container_name: rabbitmq
-    ports:
-      - 5672:5672
-      - 15672:15672
-    networks:
-      - main_network
-
-  redis:
-    image: redis
-    container_name: redis
-    ports:
-      - 6379:6379
-    networks:
-      - main_network
-
   backend:
     build: ./backend
     image: backend
     container_name: backend
     ports:
-      - 8000:8000
+      - "${BACKEND_PORT:-8000:8000}"
     volumes:
       - .:/app
     tty: true
-    networks:
-      - main_network
-    depends_on:
-      - rabbitmq
-      - redis
-
-  worker:
-    build: ./backend
-    image: celery_worker
-    container_name: 'worker'
-    ports:
-      - 80:80
-    volumes:
-      - .:/app
-    command: celery -A tasks worker --loglevel=info
     networks:
       - main_network
 
