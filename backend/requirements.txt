@@ -1,0 +1,7 @@
+axblack==20201112
+celery==5.2.6
+djangorestframework==3.15.2
+flake8==3.8.3
+ipython==7.16.1
+isort==5.7.0
+redis==4.3.1
