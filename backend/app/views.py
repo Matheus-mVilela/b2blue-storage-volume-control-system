@@ -23,6 +23,17 @@ class RecyclingStorageView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, pk, format=None):
+        try:
+            storage = RecyclingStorage.objects.get(pk=pk)
+        except RecyclingStorage.DoesNotExist:
+            return Response(
+                {'error': 'Storage not found'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        storage.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     def patch(self, request, pk, format=None):
         try:
             storage = RecyclingStorage.objects.get(pk=pk)
