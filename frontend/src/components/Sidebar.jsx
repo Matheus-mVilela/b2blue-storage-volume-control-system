@@ -88,11 +88,14 @@ export default function Sidebar() {
             'cleanup_order_approved_at',
             'cleanup_order_closed_at',
           ];
-          const data = storageHistory.map(
+          const data = cleanupOrderHistory.map(
             item => [
               item.storage_id,
               item.storage_name,
               item.current_capacity,
+              item.cleanup_order_capacity,
+              item.cleanup_order_approved_at,
+              item.cleanup_order_closed_at,
             ]);
           const csvContent = [headers, ...data].map(e => e.join(",")).join("\n");
           const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
