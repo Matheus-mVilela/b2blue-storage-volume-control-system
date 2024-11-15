@@ -20,7 +20,7 @@ shell: up ## Access django shell
 up:
 	@docker-compose up backend -d 
 
-up-api: up 
+up-backend: up 
 	@docker-compose exec backend /bin/bash -c './manage.py runserver 0.0.0.0:8000'
 
 logs: 

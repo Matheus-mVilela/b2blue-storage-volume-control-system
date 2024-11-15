@@ -20,8 +20,8 @@ from django.urls import path
 from app.views import (
     RecyclingStorageHistoryView,
     RecyclingStorageView,
-    StorageCleanupOrderView,
     StorageCleanupOrderHistoryView,
+    StorageCleanupOrderView,
 )
 
 urlpatterns = [
