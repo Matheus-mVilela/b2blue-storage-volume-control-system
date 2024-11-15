@@ -41,8 +41,12 @@ class RecyclingStorageSerializer(serializers.ModelSerializer):
 
 
 class StorageCleanupOrderSerializer(serializers.ModelSerializer):
-    recycling_storage_name = serializers.SerializerMethodField()
-    storage_id = serializers.SerializerMethodField()
+    recycling_storage_name = serializers.CharField(
+        source='recycling_storage.name', read_only=True
+    )
+    storage_id = serializers.IntegerField(
+        source='recycling_storage.id', read_only=True
+    )
 
     class Meta:
         model = StorageCleanupOrder
@@ -55,12 +59,6 @@ class StorageCleanupOrderSerializer(serializers.ModelSerializer):
             'recycling_storage_name',
         ]
 
-    def get_recycling_storage_name(self, obj):
-        return obj.recycling_storage.name if obj.recycling_storage else None
-
-    def get_storage_id(self, obj):
-        return obj.recycling_storage.id if obj.recycling_storage else None
-
 
 class StorageCleanupOrderApprovedSerializer(serializers.ModelSerializer):
     class Meta:
@@ -71,3 +69,65 @@ class StorageCleanupOrderApprovedSerializer(serializers.ModelSerializer):
         order = super().save(*argrs, **kwargs)
         order.close()
         return order
+
+
+class RecyclingStorageHistorySerializer(serializers.ModelSerializer):
+    storage_id = serializers.IntegerField(
+        source='recycling_storage.id', read_only=True
+    )
+    storage_name = serializers.CharField(
+        source='recycling_storage.name', read_only=True
+    )
+    current_capacity = serializers.IntegerField(
+        source='recycling_storage.capacity', read_only=True
+    )
+    storage_history_id = serializers.IntegerField(source='id', read_only=True)
+    storage_history_created_at = serializers.DateTimeField(
+        source='created_at', read_only=True, format='%Y-%m-%d %H:%M:%S'
+    )
+    storage_history_capacity = serializers.IntegerField(
+        source='capacity', read_only=True
+    )
+
+    class Meta:
+        model = RecyclingStorageHistory
+        fields = [
+            'storage_id',
+            'storage_name',
+            'current_capacity',
+            'storage_history_id',
+            'storage_history_capacity',
+            'storage_history_created_at',
+        ]
+
+
+class StorageCleanupOrderHistorySerializer(serializers.ModelSerializer):
+    storage_id = serializers.IntegerField(
+        source='recycling_storage.id', read_only=True
+    )
+    storage_name = serializers.CharField(
+        source='recycling_storage.name', read_only=True
+    )
+    current_capacity = serializers.IntegerField(
+        source='recycling_storage.capacity', read_only=True
+    )
+    cleanup_order_capacity = serializers.IntegerField(
+        source='current_capacity', read_only=True
+    )
+    cleanup_order_approved_at = serializers.DateTimeField(
+        source='approved_at', read_only=True, format='%Y-%m-%d %H:%M:%S'
+    )
+    cleanup_order_closed_at = serializers.DateTimeField(
+        source='closed_at', read_only=True, format='%Y-%m-%d %H:%M:%S'
+    )
+
+    class Meta:
+        model = StorageCleanupOrder
+        fields = [
+            'storage_id',
+            'storage_name',
+            'current_capacity',
+            'cleanup_order_capacity',
+            'cleanup_order_approved_at',
+            'cleanup_order_closed_at',
+        ]

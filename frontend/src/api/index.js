@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const URL = 'http://0.0.0.0:8000';
 
-export const fetchStorages = async (storage) => {
+export const fetchStorages = async () => {
     try {
       const response = await axios.get(`${URL}/storages/`);
         return response.data
@@ -65,5 +65,23 @@ export const approveCleanupOrder = async (orderId) => {
   } catch (error) {
     console.error('Error approving cleanup order:', error);
     throw error;
+  }
+};
+
+export const downloadStorageHistory = async () => {
+  try {
+    const response = await axios.get(`${URL}/storages/history/download/`);
+      return response.data
+  } catch (error) {
+    console.error('Error fetch storage:', error);
+  }
+};
+
+export const dowloadCleanupOrderHistory = async () => {
+  try {
+    const response = await axios.get(`${URL}/cleanup-orders/history/download/`);
+      return response.data
+  } catch (error) {
+    console.error('Error fetch storage:', error);
   }
 };

@@ -2,10 +2,16 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from app.models import RecyclingStorage, StorageCleanupOrder
+from app.models import (
+    RecyclingStorage,
+    RecyclingStorageHistory,
+    StorageCleanupOrder,
+)
 from app.serializers import (
+    RecyclingStorageHistorySerializer,
     RecyclingStorageSerializer,
     StorageCleanupOrderApprovedSerializer,
+    StorageCleanupOrderHistorySerializer,
     StorageCleanupOrderSerializer,
 )
 
@@ -78,3 +84,17 @@ class StorageCleanupOrderView(APIView):
             order.recycling_storage.clean_capacity()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RecyclingStorageHistoryView(APIView):
+    def get(self, request):
+        history = RecyclingStorageHistory.objects.all()
+        serializer = RecyclingStorageHistorySerializer(history, many=True)
+        return Response(serializer.data)
+
+
+class StorageCleanupOrderHistoryView(APIView):
+    def get(self, request):
+        orders = StorageCleanupOrder.objects.all()
+        serializer = StorageCleanupOrderHistorySerializer(orders, many=True)
+        return Response(serializer.data)

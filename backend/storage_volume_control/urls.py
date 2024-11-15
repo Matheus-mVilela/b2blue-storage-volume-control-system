@@ -17,11 +17,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from app.views import RecyclingStorageView, StorageCleanupOrderView
+from app.views import (
+    RecyclingStorageHistoryView,
+    RecyclingStorageView,
+    StorageCleanupOrderView,
+    StorageCleanupOrderHistoryView,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('storages/', RecyclingStorageView.as_view(), name='storages'),
+    path(
+        'storages/history/download/',
+        RecyclingStorageHistoryView.as_view(),
+        name='download-storage-history',
+    ),
     path(
         'storages/<int:pk>/',
         RecyclingStorageView.as_view(),
@@ -31,6 +41,11 @@ urlpatterns = [
         'cleanup-orders/',
         StorageCleanupOrderView.as_view(),
         name='cleanup_orders',
+    ),
+    path(
+        'cleanup-orders/history/download/',
+        StorageCleanupOrderHistoryView.as_view(),
+        name='download-cleanup-orders-history',
     ),
     path(
         'cleanup-orders/<int:pk>/',
