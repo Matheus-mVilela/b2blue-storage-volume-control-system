@@ -1,8 +1,7 @@
 import { Container, Box, FormControl, Typography, Button, Avatar, TextField, Alert } from '@mui/material';
 import bannerImage from '../assets/sustainability_banner.jpeg'; 
 import { useState } from 'react';
-import { createStorage, downloadStorageHistory, dowloadCleanupOrderHistory} from '../api';
-import { queryClient } from '../App';
+import { createStorage, downloadStorageHistory, downloadCleanupOrderHistory, invalidateQueries} from '../api';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import { useQuery } from '@tanstack/react-query';
 
@@ -25,12 +24,12 @@ export default function Sidebar() {
         } catch (err) {
             setError('Error creating storage. Please try again.');
         }
-        queryClient.invalidateQueries({ queryKey: ['storages'] })
+        invalidateQueries();
 
     };
     const { data: storageHistory} = useQuery({
       queryKey: ['storageHistory'],
-    queryFn: downloadStorageHistory,
+      queryFn: downloadStorageHistory,
   });
 
     const handleDowloadSotorageHistory = async () => {
@@ -71,7 +70,7 @@ export default function Sidebar() {
 
     const { data: cleanupOrderHistory} = useQuery({
       queryKey: ['cleanupOrderHistory'],
-    queryFn: dowloadCleanupOrderHistory,
+      queryFn: downloadCleanupOrderHistory,
     });
     
     const handleDowloadCleanupOrderHistory = async () => {

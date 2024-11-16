@@ -26,11 +26,15 @@ This project is a **Storage Management System** developed to manage and track st
    `git clone git@github.com:Matheus-mVilela/b2blue-storage-volume-control-system.git`
 2. Navigate to the project folder:
    `cd b2blue-storage-volume-control-system`
-3. Start the backend services:
+3. Build Containers
+   `make build`
+4. Apply migrations:
+   `make migrate`
+5. Start the backend services:
    `make up-backend`
-4. Open a new terminal and start the frontend:
+6. Open a new terminal and start the frontend:
    `make up-frontend`
-5. The project should now be up and running locally!
+7. The project should now be up and running locally!
 
 * You can access the **API** at `http://localhost:8000/`.
 * The **Frontend** can be accessed at `http://localhost:3000`.

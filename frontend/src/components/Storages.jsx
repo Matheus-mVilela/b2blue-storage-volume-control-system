@@ -1,7 +1,7 @@
 import { Container, Box, Typography, Divider, Checkbox, Button, FormControl, TextField, IconButton } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { fetchStorages, fetchCleanupOrders, approveCleanupOrder, updateStorage, deleteStorage} from '../api';
+import { fetchStorages, fetchCleanupOrders, approveCleanupOrder, updateStorage, deleteStorage, invalidateQueries} from '../api';
 import { useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
@@ -25,8 +25,7 @@ export default function Storages() {
     const handleApproveOrder = async (orderId) => {
         try {
             await approveCleanupOrder(orderId);
-            queryClient.invalidateQueries({ queryKey: ['cleanupOrders'] });
-            queryClient.invalidateQueries({ queryKey: ['storages'] });
+            invalidateQueries();
         } catch (error) {
             console.error('Failed to approve cleanup order:', error);
         }
@@ -35,8 +34,7 @@ export default function Storages() {
     const handleUpdateStorage = async (id, newCapacity) => {
         try {
             await updateStorage(id, newCapacity);
-            queryClient.invalidateQueries({ queryKey: ['cleanupOrders'] });
-            queryClient.invalidateQueries({ queryKey: ['storages'] });
+            invalidateQueries();
         } catch (error) {
             console.error('Failed to update storage:', error);
         }

@@ -51,13 +51,11 @@ class RecyclingStorageView(APIView):
         serializer = RecyclingStorageSerializer(
             storage, data=request.data, partial=True
         )
-        if not serializer.is_valid():
-            return Response(
-                serializer.errors, status=status.HTTP_400_BAD_REQUEST
-            )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
 
-        serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class StorageCleanupOrderView(APIView):
