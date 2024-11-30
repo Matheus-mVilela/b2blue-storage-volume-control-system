@@ -1,0 +1,31 @@
+name: CI
+
+on: pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: b2blue-storage-volume-control-system
+
+    - name: Set up Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    - name: Build Docker images
+      working-directory: ./b2blue-storage-volume-control-system
+      run: |
+        make build
+        make migrate
+
+    - name: Run Django tests
+      working-directory: ./b2blue-storage-volume-control-system
+      run: make test
+
+    - name: Tear down Docker Compose
+      working-directory: ./b2blue-storage-volume-control-system
+      run: make down

@@ -3,25 +3,25 @@ build:
 	@docker-compose build
 
 format: up ## Style code
-	@docker-compose exec backend /bin/bash -c 'isort . && blue . && flake8 .'
+	@docker-compose exec -T backend /bin/bash -c 'isort . && blue . && flake8 .'
 
 test: up ## Run tests
-	@docker-compose exec backend /bin/bash -c './manage.py test app'
+	@docker-compose exec -T backend /bin/bash -c './manage.py test app'
 
 restart: ## Restart the container
 	@docker-compose restart backend
 
 cmd: up ## Access bash
-	@docker-compose exec backend /bin/bash
+	@docker-compose exec -T backend /bin/bash
 
 shell: up ## Access django shell
-	@docker-compose exec backend /bin/bash -c './manage.py shell'
+	@docker-compose exec -T backend /bin/bash -c './manage.py shell'
 
 up:
-	@docker-compose up backend -d 
+	@docker-compose up -d backend
 
 up-backend: up 
-	@docker-compose exec backend /bin/bash -c './manage.py runserver 0.0.0.0:8000'
+	@docker-compose exec -T backend /bin/bash -c './manage.py runserver 0.0.0.0:8000'
 
 logs: 
 	@docker-compose logs backend -f 
@@ -30,13 +30,13 @@ down:
 	@docker-compose down || true
 
 makemigrations: up
-	@docker-compose exec backend /bin/bash -c './manage.py makemigrations'
+	@docker-compose exec -T backend /bin/bash -c './manage.py makemigrations'
 
 migrate: up
-	@docker-compose exec backend /bin/bash -c './manage.py migrate'
+	@docker-compose exec -T backend /bin/bash -c './manage.py migrate'
 
 createsuperuser: up
-	@docker-compose exec backend /bin/bash -c './manage.py createsuperuser'
+	@docker-compose exec -T backend /bin/bash -c './manage.py createsuperuser'
 
 up-frontend:
 	@docker-compose up frontend -d
