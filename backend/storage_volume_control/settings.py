@@ -10,7 +10,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Security settings
 SECRET_KEY = env.str('SECRET_KEY', default='very-secret')
 DEBUG = env.bool('DEBUG', default=True)
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['0.0.0.0', 'localhost'])
+ALLOWED_HOSTS = env.list(
+    'ALLOWED_HOSTS',
+    default=[
+        '0.0.0.0',
+        'localhost',
+        'backend-django-production.up.railway.app',
+        ],
+    )
 
 INSTALLED_APPS = [
     'django.contrib.admin',

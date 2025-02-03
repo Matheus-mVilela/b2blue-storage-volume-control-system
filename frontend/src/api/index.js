@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { queryClient } from '../App';
 
-const URL = 'http://0.0.0.0:8000';
+const URL = 'https://backend-django-production.up.railway.app/';
 
 const callApi = async (endpoint, method = 'GET', data = null) => {
   try {
